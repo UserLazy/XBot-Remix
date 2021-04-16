@@ -1,5 +1,5 @@
 from PIL import Image, ImageDraw, ImageFont
-from userbot import CMD_HELP
+from userbot import CMD_HELP, bot
 from userbot.events import register
 
 
@@ -7,7 +7,7 @@ from userbot.events import register
 async def image_maker(event):
     user = await event.get_reply_message()
     await event.edit("`Membuat ID Card..`")
-    await event.client.download_profile_photo(user, file="user.png", download_big=True
+    await bot.download_profile_photo(user, file="user.png", download_big=True
                                               )
     user_photo = Image.open("user.png")
     id_template = Image.open("userbot/resources/FrameID.png")
@@ -24,7 +24,7 @@ async def image_maker(event):
         font=font,
     )
     id_template.save("user_id.png")
-    await event.client.send_file(
+    await bot.send_file(
         event.chat_id,
         "Generated User ID",
         reply_to=event.message.reply_to_msg_id,
