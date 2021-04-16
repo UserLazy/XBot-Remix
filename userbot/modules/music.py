@@ -202,7 +202,7 @@ async def download_video(v_url):
                      f"{rip_data['title']}.mp3")))
     os.remove(f"{rip_data['id']}.mp3")
     await rkp.delete()
-    os.system("rm *.mkv *.mp4 *.webm *.mp3 *.webp")
+    os.system("rm *.webp")
 
 
 @register(outgoing=True, pattern=r"^\.vsong(?: |$)(.*)")
