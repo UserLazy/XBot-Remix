@@ -7,6 +7,8 @@ import glob
 import os
 import shutil
 import time
+import json
+import pybase64
 from telethon.errors.rpcerrorlist import YouBlockedUserError
 import time
 from asyncio.exceptions import TimeoutError
@@ -149,9 +151,7 @@ async def download_video(v_url):
             True,
             'logtostderr':
             False
-        }
-        video = False
-        song = True
+        }  
     try:
         await rkp.edit("`Fetching data, please wait..`")
         with YoutubeDL(opts) as rip:
@@ -203,20 +203,6 @@ async def download_video(v_url):
                 progress(d, t, v_url, c_time, "Uploading..",
                          f"{rip_data['title']}.mp3")))
         os.remove(f"{rip_data['id']}.mp3")
-        await rkp.delete()
-    elif video:
-        await rkp.edit(f"`Prosess upload song :`\
-        \n**{rip_data['title']}**")
-        await v_url.client.send_file(
-            v_url.chat_id,
-            f"{rip_data['id']}.mp4",
-            supports_streaming=True,
-            caption=url,
-            progress_callback=lambda d, t: asyncio.get_event_loop(
-            ).create_task(
-                progress(d, t, v_url, c_time, "Uploading..",
-                         f"{rip_data['title']}.mp4")))
-        os.remove(f"{rip_data['id']}.mp4")
         await rkp.delete()
         os.system("rm *.mkv *.mp4 *.webm *.mp3")
 
