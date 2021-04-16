@@ -108,23 +108,25 @@ async def _(event):
 @register(outgoing=True, pattern=r"^\.song(?: |$)(.*)")
 async def download_video(v_url):
 
-    lazy = v_url ; sender = await lazy.get_sender() ; me = await lazy.client.get_me()
+    lazy = v_url
+    sender = await lazy.get_sender()
+    me = await lazy.client.get_me()
 
     if not sender.id == me.id:
         rkp = await lazy.edit("`Mencari Lagu...`")
     else:
-    	rkp = await lazy.edit("`Mencari Lagu...`")   
+        rkp = await lazy.edit("`Mencari Lagu...`")
     url = v_url.pattern_match.group(1)
     if not url:
-         return await rkp.edit("`Error \nusage song <song name>`")
-    search = SearchVideos(url, offset = 1, mode = "json", max_results = 1)
+        return await rkp.edit("`Error \nusage song <song name>`")
+    search = SearchVideos(url, offset=1, mode="json", max_results=1)
     test = search.result()
     p = json.loads(test)
     q = p.get('search_result')
     try:
-       url = q[0]['link']
-    except:
-    	return await rkp.edit("`Music tidak di temukan`")
+        url = q[0]['link']
+    except BaseException:
+        return await rkp.edit("`Music tidak di temukan`")
     type = "audio"
     await rkp.edit("`Proses download...`")
     if type == "audio":
@@ -156,7 +158,7 @@ async def download_video(v_url):
             False
         }
         video = False
-        song = True    
+        song = True
     try:
         await rkp.edit("`Fetching data, please wait..`")
         with YoutubeDL(opts) as rip:
