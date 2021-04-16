@@ -14,6 +14,7 @@ from telethon.tl.functions.users import GetFullUserRequest
 from telethon.tl.types import MessageEntityMentionName
 from telethon.errors.rpcerrorlist import YouBlockedUserError
 
+
 @register(outgoing=True, pattern=r"^\.id")
 async def image_maker(event):
     id = "".join(event.raw_text.split(maxsplit=2)[1:])
@@ -23,7 +24,7 @@ async def image_maker(event):
         photos = await event.client.get_profile_photos(user.sender)
     else:
         photos = await event.client.get_profile_photos(chat)
-        await event.client.download_profile_photo(user, 
+        await event.client.download_profile_photo(user,
         file="user.png", download_big=True
     )
         user_photo = Image.open("user.png")
