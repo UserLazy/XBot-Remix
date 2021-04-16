@@ -185,10 +185,10 @@ async def download_video(v_url):
         await rkp.edit(f"{str(type(e)): {str(e)}}")
         return
     c_time = time.time()
-    try:
-        await rkp.edit(f"`Preparing to upload song:`\
+    
+    await rkp.edit(f"`Preparing to upload song:`\
         \n**{rip_data['title']}**")
-        await v_url.client.send_file(
+    await v_url.client.send_file(
             v_url.chat_id,
             f"{rip_data['id']}.mp3",
             supports_streaming=True,
@@ -200,9 +200,9 @@ async def download_video(v_url):
             progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
                 progress(d, t, v_url, c_time, "Uploading..",
                          f"{rip_data['title']}.mp3")))
-        os.remove(f"{rip_data['id']}.mp3")
-        await rkp.delete()
-        os.system("rm *.mkv *.mp4 *.webm *.mp3")
+    os.remove(f"{rip_data['id']}.mp3")
+    await rkp.delete()
+    os.system("rm *.mkv *.mp4 *.webm *.mp3")
 
 
 @register(outgoing=True, pattern=r"^\.vsong(?: |$)(.*)")
