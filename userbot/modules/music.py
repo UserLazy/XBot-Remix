@@ -105,24 +105,28 @@ async def _(event):
         )
 
 
-@register(outgoing=True, pattern="^\\.song (.*)")
-async def download_video(lazi):
-    if lazi.fwd_from:
-        return
-    url = lazi.pattern_match.group(1)
-    await lazy.edit("`Mencari Lagu...`")
+@register(outgoing=True, pattern=r"^\.song(?: |$)(.*)")
+async def download_video(v_url):
+
+    lazy = v_url ; sender = await lazy.get_sender() ; me = await lazy.client.get_me()
+
+    if not sender.id == me.id:
+        rkp = await lazy.edit("`Mencari Lagu...`")
+    else:
+    	rkp = await lazy.edit("`Mencari Lagu...`")   
+    url = v_url.pattern_match.group(1)
     if not url:
-        return await lazi.edit("`Error \nusage song <song name>`")
-    search = SearchVideos(url, offset=1, mode="json", max_results=1)
+         return await rkp.edit("`Error \nusage song <song name>`")
+    search = SearchVideos(url, offset = 1, mode = "json", max_results = 1)
     test = search.result()
     p = json.loads(test)
     q = p.get('search_result')
     try:
-        url = q[0]['link']
-    except BaseException:
-        return await lazi.edit("`Music tidak di temukan`")
+       url = q[0]['link']
+    except:
+    	return await rkp.edit("`Music tidak di temukan`")
     type = "audio"
-    await lazi.edit("`Proses download...`")
+    await rkp.edit("`Proses download...`")
     if type == "audio":
         opts = {
             'format':
@@ -152,46 +156,46 @@ async def download_video(lazi):
             False
         }
         video = False
-        song = True
+        song = True    
     try:
-        await lazi.edit("`Proses upload, please wait..`")
+        await rkp.edit("`Fetching data, please wait..`")
         with YoutubeDL(opts) as rip:
             rip_data = rip.extract_info(url)
     except DownloadError as DE:
-        await lazi.edit(f"`{str(DE)}`")
+        await rkp.edit(f"`{str(DE)}`")
         return
     except ContentTooShortError:
-        await lazi.edit("`The download content was too short.`")
+        await rkp.edit("`The download content was too short.`")
         return
     except GeoRestrictedError:
-        await lazi.edit(
+        await rkp.edit(
             "`Video is not available from your geographic location due to geographic restrictions imposed by a website.`"
         )
         return
     except MaxDownloadsReached:
-        await lazi.edit("`Max-downloads limit has been reached.`")
+        await rkp.edit("`Max-downloads limit has been reached.`")
         return
     except PostProcessingError:
-        await lazi.edit("`There was an error during post processing.`")
+        await rkp.edit("`There was an error during post processing.`")
         return
     except UnavailableVideoError:
-        await lazi.edit("`Media is not available in the requested format.`")
+        await rkp.edit("`Media is not available in the requested format.`")
         return
     except XAttrMetadataError as XAME:
-        await lazi.edit(f"`{XAME.code}: {XAME.msg}\n{XAME.reason}`")
+        await rkp.edit(f"`{XAME.code}: {XAME.msg}\n{XAME.reason}`")
         return
     except ExtractorError:
-        await lazi.edit("`There was an error during info extraction.`")
+        await rkp.edit("`There was an error during info extraction.`")
         return
     except Exception as e:
-        await lazi.edit(f"{str(type(e)): {str(e)}}")
+        await rkp.edit(f"{str(type(e)): {str(e)}}")
         return
     c_time = time.time()
     if song:
-        await lazi.edit(f"`Preparing to upload song:`\
+        await rkp.edit(f"`Preparing to upload song:`\
         \n**{rip_data['title']}**")
-        await lazi.client.send_file(
-            lazi.chat_id,
+        await v_url.client.send_file(
+            v_url.chat_id,
             f"{rip_data['id']}.mp3",
             supports_streaming=True,
             attributes=[
@@ -201,25 +205,24 @@ async def download_video(lazi):
             ],
             progress_callback=lambda d, t: asyncio.get_event_loop(
             ).create_task(
-                progress(d, t, lazi, c_time, "Uploading..",
+                progress(d, t, v_url, c_time, "Uploading..",
                          f"{rip_data['title']}.mp3")))
         os.remove(f"{rip_data['id']}.mp3")
-        await lazi.delete()
+        await rkp.delete()
     elif video:
-        await lazi.edit(f"`Prosess upload song :`\
+        await rkp.edit(f"`Prosess upload song :`\
         \n**{rip_data['title']}**")
-        await lazi.client.send_file(
-            lazi.chat_id,
+        await v_url.client.send_file(
+            v_url.chat_id,
             f"{rip_data['id']}.mp4",
             supports_streaming=True,
             caption=url,
             progress_callback=lambda d, t: asyncio.get_event_loop(
             ).create_task(
-                progress(d, t, lazi, c_time, "Uploading..",
+                progress(d, t, v_url, c_time, "Uploading..",
                          f"{rip_data['title']}.mp4")))
-        await lazi.delete()
         os.remove(f"{rip_data['id']}.mp4")
-        os.remove(thumb_image)
+        await rkp.delete()
         os.system("rm *.mkv *.mp4 *.webm *.mp3")
 
 
