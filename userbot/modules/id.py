@@ -5,30 +5,33 @@ from userbot.events import register
 
 @register(outgoing=True, pattern=r"^\.id")
 async def image_maker(event):
-    if not event.reply_to_msg_id:
-        await event.edit("`Reply di pesan goblok!..`")
-        return
-    replied_user = await event.get_reply_message()
-    await event.client.download_profile_photo(
-        replied_user.from_id, file="user.png", download_big=True
+    id = "".join(event.raw_text.split(maxsplit=2)[1:])
+    user = await event.get_reply_message()
+    chat = event.input_chat
+    if user:
+        photos = await event.client.get_profile_photos(user.sender)
+    else:
+        photos = await event.client.get_profile_photos(chat)
+        await event.client.download_profile_photo(user, 
+        file="user.png", download_big=True
     )
-    user_photo = Image.open("user.png")
-    id_template = Image.open("userbot/resources/FrameID.png")
-    user_photo = user_photo.resize((989, 1073))
-    id_template.paste(user_photo, (1229, 573))
-    position = (2473, 481)
-    draw = ImageDraw.Draw(id_template)
-    color = "rgb(23, 43, 226)"  # red color
-    font = ImageFont.truetype("userbot/resources/fontx.ttf", size=200)
-    draw.text(
-        position,
-        replied_user.sender.first_name.replace("\u2060", ""),
-        fill=color,
-        font=font,
+        user_photo = Image.open("user.png")
+        id_template = Image.open("userbot/resources/FrameID.png")
+        user_photo = user_photo.resize((989, 1073))
+        id_template.paste(user_photo, (1229, 573))
+        position = (2473, 481)
+        draw = ImageDraw.Draw(id_template)
+        color = "rgb(23, 43, 226)"  # red color
+        font = ImageFont.truetype("userbot/resources/fontx.ttf", size=200)
+        draw.text(
+            position,
+            user.sender.first_name.replace("\u2060", ""),
+            fill=color,
+            font=font,
     )
-    id_template.save("user_id.png")
-    await event.edit("`Membuat ID Card..`")
-    await event.client.send_file(
+       id_template.save("user_id.png")
+       await event.edit("`Membuat ID Card..`")
+       await event.client.send_file(
         event.chat_id,
         "Generated User ID",
         reply_to=event.message.reply_to_msg_id,
@@ -36,7 +39,7 @@ async def image_maker(event):
         force_document=False,
         silent=True,
     )
-    await event.delete()
+       await event.delete()
 
 
 CMD_HELP.update(
