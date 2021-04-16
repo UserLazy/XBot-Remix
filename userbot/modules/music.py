@@ -107,15 +107,8 @@ async def _(event):
 
 @register(outgoing=True, pattern=r"^\.song(?: |$)(.*)")
 async def download_video(v_url):
-
     lazy = v_url
-    sender = await lazy.get_sender()
-    me = await lazy.client.get_me()
-
-    if not sender.id == me.id:
-        rkp = await lazy.edit("`Mencari Lagu...`")
-    else:
-        rkp = await lazy.edit("`Mencari Lagu...`")
+    rkp = await lazy.edit("`Mencari Lagu...`")
     url = v_url.pattern_match.group(1)
     if not url:
         return await rkp.edit("`Error \nusage song <song name>`")
