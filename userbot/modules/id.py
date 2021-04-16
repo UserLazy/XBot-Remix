@@ -40,18 +40,18 @@ async def image_maker(event):
             user.sender.first_name.replace("\u2060", ""),
             fill=color,
             font=font,
-    )
-       id_template.save("user_id.png")
-       await event.edit("`Membuat ID Card..`")
-       await event.client.send_file(
-        event.chat_id,
-        "Generated User ID",
-        reply_to=event.message.reply_to_msg_id,
-        file="user_id.png",
-        force_document=False,
-        silent=True,
-    )
-       await event.delete()
+        )
+        id_template.save("user_id.png")
+        await event.edit("`Membuat ID Card..`")
+        await event.client.send_file(
+              event.chat_id,
+              "Generated User ID",
+              reply_to=event.message.reply_to_msg_id,
+              file="user_id.png",
+              force_document=False,
+              silent=True,
+        )
+        await event.delete()
 
 
 CMD_HELP.update(
