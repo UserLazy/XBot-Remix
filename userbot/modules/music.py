@@ -105,14 +105,14 @@ async def _(event):
         )
 
 
-@register(outgoing=True, pattern="^.song(?: |$)(.*)")
+@register(outgoing=True, pattern="^\.song (.*)")
 async def download_video(lazi):
     if lazi.fwd_from:
         return
     url = lazi.pattern_match.group(1)
-    rkp = await lazy.edit("`Mencari Lagu...`")
+    await lazy.edit("`Mencari Lagu...`")
     if not url:
-        return await rkp.edit("`Error \nusage song <song name>`")
+        return await lazi.edit("`Error \nusage song <song name>`")
     search = SearchVideos(url, offset=1, mode="json", max_results=1)
     test = search.result()
     p = json.loads(test)
@@ -120,9 +120,9 @@ async def download_video(lazi):
     try:
         url = q[0]['link']
     except BaseException:
-        return await rkp.edit("`Music tidak di temukan`")
+        return await lazi.edit("`Music tidak di temukan`")
     type = "audio"
-    await rkp.edit("`Proses download...`")
+    await lazi.edit("`Proses download...`")
     if type == "audio":
         opts = {
             'format':
@@ -154,41 +154,41 @@ async def download_video(lazi):
         video = False
         song = True
     try:
-        await rkp.edit("`Proses upload, please wait..`")
+        await lazi.edit("`Proses upload, please wait..`")
         with YoutubeDL(opts) as rip:
             rip_data = rip.extract_info(url)
     except DownloadError as DE:
-        await rkp.edit(f"`{str(DE)}`")
+        await lazi.edit(f"`{str(DE)}`")
         return
     except ContentTooShortError:
-        await rkp.edit("`The download content was too short.`")
+        await lazi.edit("`The download content was too short.`")
         return
     except GeoRestrictedError:
-        await rkp.edit(
+        await lazi.edit(
             "`Video is not available from your geographic location due to geographic restrictions imposed by a website.`"
         )
         return
     except MaxDownloadsReached:
-        await rkp.edit("`Max-downloads limit has been reached.`")
+        await lazi.edit("`Max-downloads limit has been reached.`")
         return
     except PostProcessingError:
-        await rkp.edit("`There was an error during post processing.`")
+        await lazi.edit("`There was an error during post processing.`")
         return
     except UnavailableVideoError:
-        await rkp.edit("`Media is not available in the requested format.`")
+        await lazi.edit("`Media is not available in the requested format.`")
         return
     except XAttrMetadataError as XAME:
-        await rkp.edit(f"`{XAME.code}: {XAME.msg}\n{XAME.reason}`")
+        await lazi.edit(f"`{XAME.code}: {XAME.msg}\n{XAME.reason}`")
         return
     except ExtractorError:
-        await rkp.edit("`There was an error during info extraction.`")
+        await lazi.edit("`There was an error during info extraction.`")
         return
     except Exception as e:
-        await rkp.edit(f"{str(type(e)): {str(e)}}")
+        await lazi.edit(f"{str(type(e)): {str(e)}}")
         return
     c_time = time.time()
     if song:
-        await rkp.edit(f"`Preparing to upload song:`\
+        await lazi.edit(f"`Preparing to upload song:`\
         \n**{rip_data['title']}**")
         await lazi.client.send_file(
             lazi.chat_id,
@@ -204,9 +204,9 @@ async def download_video(lazi):
                 progress(d, t, lazi, c_time, "Uploading..",
                          f"{rip_data['title']}.mp3")))
         os.remove(f"{rip_data['id']}.mp3")
-        await rkp.delete()
+        await lazi.delete()
     elif video:
-        await rkp.edit(f"`Prosess upload song :`\
+        await lazi.edit(f"`Prosess upload song :`\
         \n**{rip_data['title']}**")
         await lazi.client.send_file(
             lazi.chat_id,
@@ -217,7 +217,7 @@ async def download_video(lazi):
             ).create_task(
                 progress(d, t, lazi, c_time, "Uploading..",
                          f"{rip_data['title']}.mp4")))
-        await rkp.delete()
+        await lazi.delete()
         os.remove(f"{rip_data['id']}.mp4")
         os.remove(thumb_image)
         os.system("rm *.mkv *.mp4 *.webm *.mp3")
