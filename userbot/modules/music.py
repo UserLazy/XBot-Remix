@@ -105,7 +105,7 @@ async def _(event):
         )
 
 
-@register(outgoing=True, pattern="^\.song (.*)")
+@register(outgoing=True, pattern="^\\.song (.*)")
 async def download_video(lazi):
     if lazi.fwd_from:
         return
