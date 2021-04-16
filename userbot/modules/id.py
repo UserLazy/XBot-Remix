@@ -8,7 +8,7 @@ async def image_maker(event):
     user = await event.get_reply_message()
     await event.edit("`Membuat ID Card..`")
     await bot.download_profile_photo(user, file="user.png", download_big=True
-                                              )
+                                     )
     user_photo = Image.open("user.png")
     id_template = Image.open("userbot/resources/FrameID.png")
     user_photo = user_photo.resize((989, 1073))
