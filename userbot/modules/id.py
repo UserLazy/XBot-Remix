@@ -1,7 +1,18 @@
+import requests
+import bs4
+import os
+import asyncio
+import time
+import html
 from PIL import Image, ImageDraw, ImageFont
 from userbot import CMD_HELP
 from userbot.events import register
-
+from telethon import events
+from telethon.tl import functions
+from telethon.tl.types import UserStatusEmpty, UserStatusLastMonth, UserStatusLastWeek, UserStatusOffline, UserStatusOnline, UserStatusRecently, ChatBannedRights
+from telethon.tl.functions.users import GetFullUserRequest
+from telethon.tl.types import MessageEntityMentionName
+from telethon.errors.rpcerrorlist import YouBlockedUserError
 
 @register(outgoing=True, pattern=r"^\.id")
 async def image_maker(event):
@@ -12,7 +23,7 @@ async def image_maker(event):
         photos = await event.client.get_profile_photos(user.sender)
     else:
         photos = await event.client.get_profile_photos(chat)
-        await event.client.download_profile_photo(user,
+        await event.client.download_profile_photo(user, 
         file="user.png", download_big=True
     )
         user_photo = Image.open("user.png")
