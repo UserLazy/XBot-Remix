@@ -109,7 +109,7 @@ async def _(event):
 @register(outgoing=True, pattern=r"^\.song(?: |$)(.*)")
 async def download_video(v_url):
     lazy = v_url
-    rkp = await lazy.edit("`Mencari Lagu...`")
+    rkp = await lazy.edit(f"`Mencari Music {url}...`")
     url = v_url.pattern_match.group(1)
     if not url:
         return await rkp.edit("`Error \nusage song <song name>`")
@@ -197,8 +197,7 @@ async def download_video(v_url):
                                        title=str(rip_data['title']),
                                        performer=str(rip_data['uploader']))
             ],
-            progress_callback=lambda d, t: asyncio.get_event_loop(
-            ).create_task(
+            progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
                 progress(d, t, v_url, c_time, "Uploading..",
                          f"{rip_data['title']}.mp3")))
         os.remove(f"{rip_data['id']}.mp3")
