@@ -107,8 +107,10 @@ async def _(event):
 
 @register(outgoing=True, pattern="^.song(?: |$)(.*)")
 async def download_video(lazi):
-    rkp = await lazy.edit("`Mencari Lagu...`")
+    if lazi.fwd_from:
+        return
     url = lazi.pattern_match.group(1)
+    rkp = await lazy.edit("`Mencari Lagu...`")
     if not url:
         return await rkp.edit("`Error \nusage song <song name>`")
     search = SearchVideos(url, offset=1, mode="json", max_results=1)
