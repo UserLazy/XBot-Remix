@@ -1,18 +1,6 @@
-import requests
-import bs4
-import os
-import asyncio
-import time
-import html
 from PIL import Image, ImageDraw, ImageFont
 from userbot import CMD_HELP
 from userbot.events import register
-from telethon import events
-from telethon.tl import functions
-from telethon.tl.types import UserStatusEmpty, UserStatusLastMonth, UserStatusLastWeek, UserStatusOffline, UserStatusOnline, UserStatusRecently, ChatBannedRights
-from telethon.tl.functions.users import GetFullUserRequest
-from telethon.tl.types import MessageEntityMentionName
-from telethon.errors.rpcerrorlist import YouBlockedUserError
 
 
 @register(outgoing=True, pattern=r"^\.id")
@@ -21,12 +9,12 @@ async def image_maker(event):
     user = await event.get_reply_message()
     chat = event.input_chat
     if user:
-        photos = await event.client.get_profile_photos(user.sender)
+        await event.client.get_profile_photos(user.sender)
     else:
-        photos = await event.client.get_profile_photos(chat)
+        await event.client.get_profile_photos(chat)
         await event.client.download_profile_photo(user,
-        file="user.png", download_big=True
-    )
+                                                  file="user.png", download_big=True
+                                                  )
         user_photo = Image.open("user.png")
         id_template = Image.open("userbot/resources/FrameID.png")
         user_photo = user_photo.resize((989, 1073))
@@ -44,12 +32,12 @@ async def image_maker(event):
         id_template.save("user_id.png")
         await event.edit("`Membuat ID Card..`")
         await event.client.send_file(
-              event.chat_id,
-              "Generated User ID",
-              reply_to=event.message.reply_to_msg_id,
-              file="user_id.png",
-              force_document=False,
-              silent=True,
+            event.chat_id,
+            "Generated User ID",
+            reply_to=event.message.reply_to_msg_id,
+            file="user_id.png",
+            force_document=False,
+            silent=True,
         )
         await event.delete()
 
