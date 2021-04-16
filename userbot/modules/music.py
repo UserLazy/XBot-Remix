@@ -106,7 +106,7 @@ async def _(event):
 
 
 @register(outgoing=True, pattern="^.song(?: |$)(.*)")
-async def download_video(lazi):   
+async def download_video(lazi):
     rkp = await lazy.edit("`Mencari Lagu...`")
     url = lazi.pattern_match.group(1)
     if not url:
