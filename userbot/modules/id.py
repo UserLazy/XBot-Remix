@@ -12,7 +12,7 @@ async def image_maker(event):
         photos = await event.client.get_profile_photos(user.sender)
     else:
         photos = await event.client.get_profile_photos(chat)
-        await event.client.download_profile_photo(user, 
+        await event.client.download_profile_photo(user,
         file="user.png", download_big=True
     )
         user_photo = Image.open("user.png")
