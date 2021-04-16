@@ -8,7 +8,6 @@ import os
 import shutil
 import time
 import json
-import pybase64
 from telethon.errors.rpcerrorlist import YouBlockedUserError
 import time
 from asyncio.exceptions import TimeoutError
@@ -151,7 +150,7 @@ async def download_video(v_url):
             True,
             'logtostderr':
             False
-        }  
+        }
     try:
         await rkp.edit("`Fetching data, please wait..`")
         with YoutubeDL(opts) as rip:
